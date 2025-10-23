@@ -1,0 +1,20 @@
+name: Notificar cambios en el tablero Kanban
+
+on:
+  projects_v2_item:
+    types: [edited, moved]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mostrar aviso en consola
+        run: echo "Una tarea del proyecto fue movida o editada."
+
+      - name: Comentar en el issue
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.projects_v2_item.content_node_id }}
+          body: |
+            🔔 Esta tarea ha cambiado de columna o fue editada en el tablero Kanban.
