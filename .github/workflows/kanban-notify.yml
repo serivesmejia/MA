@@ -1,20 +1,20 @@
-name: Notificar cambios en el tablero Kanban
+name: Notificar cambio de estado (Kanban clásico)
 
 on:
-  projects_v2_item:
-    types: [edited, moved]
+  issues:
+    types: [labeled, unlabeled]
 
 jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - name: Mostrar aviso en consola
-        run: echo "Una tarea del proyecto fue movida o editada."
+      - name: Mostrar información
+        run: echo "La issue ${{ github.event.issue.number }} cambió de etiqueta."
 
-      - name: Comentar en el issue
+      - name: Comentar en la issue
         uses: peter-evans/create-or-update-comment@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          issue-number: ${{ github.event.projects_v2_item.content_node_id }}
+          issue-number: ${{ github.event.issue.number }}
           body: |
-            🔔 Esta tarea ha cambiado de columna o fue editada en el tablero Kanban.
+            🔔 La tarea *#${{ github.event.issue.number }}* cambió su estado a *${{ github.event.label.name }}*.
